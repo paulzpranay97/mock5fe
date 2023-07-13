@@ -29,37 +29,21 @@
 </div>
 
 <script>
-    // JavaScript code
+
     const addEmployeeBtn = document.getElementById("add-employee-btn");
     const logoutBtn = document.getElementById("logout-btn");
     const employeeTable = document.getElementById("employee-table");
 
-    // Add event listeners to the buttons
+  
     addEmployeeBtn.addEventListener("click", () => {
-        // Redirect to the add employee form page
+  
         window.location.href = "./form.html";
     });
 
-    logoutBtn.addEventListener("click", () => {
-        // Perform logout operation
-        // You can use the fetch API to perform a logout request to the backend API
-        // For example:
-        fetch("/logout")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Failed to logout.");
-                }
-                // Redirect to the login page
-                window.location.href = "/login";
-            })
-            .catch(error => {
-                console.error(error);
-                alert(error.message);
-            });
-    });
+  
 
-    // Fetch the employee data from the backend API
-    fetch("/employees")
+   
+    fetch("https://emp-4qx5.onrender.com/api/employees")
         .then(response => {
             if (!response.ok) {
                 throw new Error("Failed to retrieve employees.");
@@ -67,7 +51,7 @@
             return response.json();
         })
         .then(data => {
-            // Render the employee data in the HTML
+          
             const employees = data.employees;
             employees.forEach(employee => {
                 const row = document.createElement("tr");
@@ -85,19 +69,19 @@
                 editBtn.textContent = "Edit";
                 deleteBtn.textContent = "Delete";
                 editBtn.addEventListener("click", () => {
-                    // Redirect to the edit employee form page
+                  
                     window.location.href = `./form.html?id=${employee._id}`;
                 });
                 deleteBtn.addEventListener("click", () => {
-                    // Perform delete operation
-                    fetch(`/employees/${employee._id}`, {
+                   
+                    fetch(`https://emp-4qx5.onrender.com/api/employees/${employee._id}`, {
                         method: "DELETE"
                     })
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error("Failed to delete employee.");
                             }
-                            // Refresh the employee list
+                           
                             window.location.reload();
                         })
                         .catch(error => {
