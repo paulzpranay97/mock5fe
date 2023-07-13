@@ -1,88 +1,87 @@
-const loginForm = document.getElementById('login-form');
-const signupForm = document.getElementById('signup-form');
-const loginToggle = document.getElementById('login-toggle');
-const signupToggle = document.getElementById('signup-toggle');
+const loginForm = document.getElementById("login-form");
+const signupForm = document.getElementById("signup-form");
+const loginToggler = document.getElementById("login-toggle");
+const signupToggler = document.getElementById("signup-toggle");
 
-loginToggle.addEventListener('click', toggleForm);
-signupToggle.addEventListener('click', toggleForm);
+loginToggler.addEventListener("click", toggleForm);
+signupToggler.addEventListener("click", toggleForm);
 
-function toggleForm(event) {
-  event.preventDefault();
+function toggleForm(e) {
+  e.preventDefault();
+  loginToggler.classList.toggle("active");
+  signupToggler.classList.toggle("active");
 
-  loginToggle.classList.toggle('active');
-  signupToggle.classList.toggle('active');
-
-  loginForm.style.display = loginToggle.classList.contains('active') ? 'block' : 'none';
-  signupForm.style.display = signupToggle.classList.contains('active') ? 'block' : 'none';
+  loginForm.style.display = loginToggler.classList.contains("active") ? 'block' : 'none';
+  signupForm.style.display = signupToggler.classList.contains("active") ? 'block' : 'none';
 }
 
-loginForm.addEventListener('submit', (e) => {
+signupForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const email = document.getElementById('login-email').value;
-  const pass = document.getElementById('login-password').value;
-  login(email, pass);
-});
+  const email = document.getElementById("signup-email").value;
+  const pass = document.getElementById("signup-password").value;
+  const confirmPassword = document.getElementById("signup-confirm-password").value;
 
-signupForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  // Get form data
-  const email = document.getElementById('signup-email').value;
-  const pass= document.getElementById('signup-password').value;
-  const confirmPassword = document.getElementById('signup-confirm-password').value;
-  signup(email, pass, confirmPassword);
-});
+  // Check if the password and confirm password fields match
+  if (pass !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
 
-function login(email, pass) {
-  fetch('https://emp-4qx5.onrender.com/api/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, pass }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.ok) {
-        localStorage.setItem('token', data.token);
-        alert('Login Successful');
-        window.location.href = '/dashboard';
-      } else {
-        alert('Invalid Credentials');
-      }
+  // Send a POST request to the /api/signup endpoint with the form data
+  const data = { email, pass, confirmPassword };
+  fetch("https://emp-4qx5.onrender.com/api/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
     })
-    .catch((error) => {
-      console.log(error);
-      alert('Error occurred during login');
-    });
-}
-
-function signup(email, pass, confirmPassword) {
-  fetch('https://emp-4qx5.onrender.com/api/signup', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, pass, confirmPassword }),
-  })
-    .then((response) => {
+    .then(response => {
       if (!response.ok) {
-        throw new Error('Signup request failed');
+        throw new Error("Signup failed.");
+      }
+      return response.text();
+    })
+    .then(data => {
+      console.log(data);
+      alert("Signup successful.");
+      // Redirect to the login page after successful signup
+      window.location.href = "/dashboard.html";
+    })
+    .catch(error => {
+      console.error(error);
+      alert(error.message);
+    });
+});
+
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const email = document.getElementById("login-email").value;
+  const pass = document.getElementById("login-password").value;
+
+  // Send a POST request to the /api/login endpoint with the form data
+  const data = { email, pass };
+  fetch("https://emp-4qx5.onrender.com/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Login failed.");
       }
       return response.json();
     })
-    .then((data) => {
-      if (data.ok) {
-        alert('Signup Successful');
-        signupForm.reset();
-        toggleForm({ target: loginToggle });
-      } else {
-        throw new Error(data.error);
-      }
+    .then(data => {
+      console.log(data);
+      alert("Login successful.");
+      // Redirect to the dashboard page after successful login
+      window.location.href = "/dashboard.html";
     })
-    .catch((error) => {
-    
-        console.log(error);
-        alert('Error occurred during signup');
-     
+    .catch(error => {
+      console.error(error);
+      alert(error.message);
     });
-}
+});
