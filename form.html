@@ -11,14 +11,52 @@
        <input type="text" id="l_name" , placeholder="Enter Last Name Here" required>
        <input type="email" id="email" , placeholder="Enter Email Here" required> 
        <input type="number" id="Salary" , placeholder="Enter Salary Here" required> 
-       <select name="" id="">
+       <select name="Department" id="department">
         <option value="">Department</option>
         <option value="Tech">Tech</option>
         <option value="Marketing">Marketing</option>
         <option value="Marketing">Operations </option>
        </select>
-       <input type="date" id="email" required> <br>
+      
        <button type="submit" class="btn">Add Employee</button>
    </form>
 </body>
 </html>
+<script>
+    const form = document.getElementById("Signup");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const f_name = document.getElementById("f_name").value;
+  const l_name = document.getElementById("l_name").value;
+  const email = document.getElementById("email").value;
+  const Salary = document.getElementById("Salary").value;
+  const department = document.getElementById("department").value;
+
+  // Send a POST request to the /employees endpoint with the form data
+  const data = { firstName: f_name, lastName: l_name, email, salary: Salary, department };
+  fetch("https://emp-4qx5.onrender.com/api/employees", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Adding employee failed.");
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);
+      alert("Employee added successfully.");
+      // Clear the form after successful submission
+      form.reset();
+    })
+    .catch(error => {
+      console.error(error);
+      alert(error.message);
+    });
+});
+</script>
