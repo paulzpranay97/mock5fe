@@ -46,7 +46,7 @@ signupForm.addEventListener("submit", (e) => {
       console.log(data);
       alert("Signup successful.");
       // Redirect to the login page after successful signup
-      window.location.href = "./dashboard.html";
+      window.location.href = "./dashbord.html";
     })
     .catch(error => {
       console.error(error);
